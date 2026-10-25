@@ -1,15 +1,23 @@
 
+from unittest.mock import patch
+
 import pytest
 
 from app.reviewer import review_code
 
 
-def test_review_code_accepts_source_code():
-    result = review_code("print('Hello, world!')")
+@patch("app.reviewer.ollama.chat")
+def test_review_code_returns_ai_response(mock_chat):
+    mock_chat.return_value = {
+        "message": {
+            "content": "Potential bug: division by zero."
+        }
+    }
 
-    assert result == (
-        "Code received successfully. AI review is not implemented yet."
-    )
+    result = review_code("def divide(a, b): return a / b")
+
+    assert result == "Potential bug: division by zero."
+    mock_chat.assert_called_once()
 
 
 def test_review_code_rejects_empty_source_code():
