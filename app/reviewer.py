@@ -1,11 +1,34 @@
 
-"""Core logic for the Local AI Code Review Assistant."""
+import ollama
+
+
+MODEL_NAME = "llama3.2:3b"
 
 
 def review_code(source_code: str) -> str:
-    """Review source code and return review feedback."""
+    """Review source code using a locally running Ollama model."""
+
     if not source_code.strip():
         raise ValueError("Source code cannot be empty.")
 
-    # AI review logic will be implemented in a later step.
-    return "Code received successfully. AI review is not implemented yet."
+    response = ollama.chat(
+        model=MODEL_NAME,
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are an experienced software code reviewer. "
+                    "Analyze the submitted source code for potential bugs, "
+                    "security vulnerabilities, and code-quality issues. "
+                    "Explain your findings clearly. If you find no issues, "
+                    "say so, while noting that the review is not exhaustive."
+                ),
+            },
+            {
+                "role": "user",
+                "content": f"Review this source code:\n\n{source_code}",
+            },
+        ],
+    )
+
+    return response["message"]["content"]
