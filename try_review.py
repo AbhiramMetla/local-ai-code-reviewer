@@ -7,7 +7,6 @@ def divide(a, b):
     return a / b
 """
 
-result = review_code(sample_code)
+review = review_code(sample_code)
 
-print("AI Code Review Result:")
-print(result)
+print(review.model_dump_json(indent=2))
